@@ -17,13 +17,13 @@ snap=4;
 thickness=thicknessCube+thicknessInternal+thicknessExternal;
 
 // the fix
-union() {
+!union() {
   // thread
   difference() {
     union() {
       cylinder(d=hole-0.25, h=thickness-1);
       difference() {
-        translate([0,0,-cylinderSnap/2+snap]) rotate([0,90,0]) cylinder(d=cylinderSnap, h=holeDistance+hole/2+10);
+        translate([0,0,-cylinderSnap/2+snap]) rotate([0,90,0]) cylinder(d=cylinderSnap, h=holeDistance+hole/2+14);
         translate ([-250,-250,-30]) cube([500,500,30]);
       }
     }
@@ -59,7 +59,7 @@ difference() {
   *translate([0,0,thickness]) rotate([0,90,-120]) cylinder(d=35,h=200);
 }
 
-
+// the base
 union() {
   difference() {
     union() {
