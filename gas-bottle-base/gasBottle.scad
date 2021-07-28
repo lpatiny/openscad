@@ -9,7 +9,7 @@ diameterCup=60;
 distanceCup=10;
 diameterGas=91.4;
 
-!difference() {
+difference() {
   union() {
     difference() {
       cylinder(d=diameter, h=thickness);
@@ -35,18 +35,19 @@ diameterGas=91.4;
 
 }
 
-union() {
+screwHeight = 70;
+screwInsert = 15;
+!union() {
   translate([0, 0, 0]) union() {
-    $fn=6; cylinder(d=40, h=10, center=true);
-    ScrewThread(20, 50, tolerance=-1.2);
-  }
-  translate([50, 0, 0]) union() {
-    $fn=6; cylinder(d=40, h=10, center=true);
-    ScrewThread(20, 50, tolerance=-1.2);
-  }
-  translate([100, 0, 0]) union() {
-    $fn=6; cylinder(d=40, h=10, center=true);
-    ScrewThread(20, 50, tolerance=-1.2);
+    difference() {
+      union() {
+        $fn=6; cylinder(d=25, h=10);
+        ScrewThread(19, screwHeight, tolerance=-1.2);
+      }
+      translate ([0,0,screwHeight-screwInsert+0.005])difference () {
+        cylinder(d=25, h=screwInsert);
+        cylinder(d=15, h=screwInsert);
+      }
+    }
   }
 }
-
