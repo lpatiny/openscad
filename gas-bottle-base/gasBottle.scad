@@ -39,7 +39,7 @@ screwHeight = 70;
 screwInsert = 15;
 !union() {
   translate([0, 0, 0]) union() {
-    difference() {
+  difference() {
       union() {
         $fn=6; cylinder(d=25, h=10);
         ScrewThread(19, screwHeight, tolerance=-1.2);
