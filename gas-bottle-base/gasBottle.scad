@@ -37,7 +37,7 @@ difference() {
 
 screwHeight = 70;
 screwInsert = 15;
-!union() {
+union() {
   translate([0, 0, 0]) union() {
   difference() {
       union() {
