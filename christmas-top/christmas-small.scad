@@ -1,8 +1,8 @@
-nbHoles=8;
+nbHoles=16;
 diameter=10;
 slit=3;
 
-fullSize=90;
+fullSize=100;
 padding=5;
 thickness=8;
 
