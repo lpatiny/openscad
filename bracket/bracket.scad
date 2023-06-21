@@ -1,3 +1,5 @@
+$fn=120;
+
 width=200;
 thickness=8;
 depth=150;
@@ -16,6 +18,7 @@ difference() {
     translate([0,thickness,0]) rotate([90,0,0]) cube([width, height, thickness]);
     translate([0,0,height/1.4142]) rotate([-45,0,0]) cube([width, height, thickness]);
   }
+  translate([width/2,0,0]) scale([10,22,16]) sphere(d=10);
   translate([screwDistance,-0.005,screwHeight]) rotate([-90,0,0])  cylinder(d=screwDiameter, h=height);
   translate([width-screwDistance,-0.005,screwHeight]) rotate([-90,0,0])  cylinder(d=screwDiameter, h=height);
   translate([screwDistance,thickness+0.005,screwHeight]) rotate([-90,0,0])  cylinder(d=screwBigDiameter, h=height);

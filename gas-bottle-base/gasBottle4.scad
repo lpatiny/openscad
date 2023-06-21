@@ -1,4 +1,4 @@
-$fn=60;
+$fn=20;
 
 include <../utils/threads.scad>; 
 

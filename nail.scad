@@ -1,8 +1,8 @@
 include <./utils/roundedParallelepiped4.scad>;
 
-height=60;
+height=80; // Chrimats tree: 60
 
-width=15;
+width=15; 
 thickness=3;
 head=28;
 
