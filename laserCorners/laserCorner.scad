@@ -4,9 +4,12 @@ height=10;
 cut=30;
 diameter=20.2;
 padding=8;
+centerToEdge = 21.2; // 21.2 or 69
 
-distanceX = 21 / 2;
-distanceY = 69 - 21 / 2; 
+xShift = -10; // we will shift + or - 10
+
+distanceX = 21 / 2 + xShift;
+distanceY = centerToEdge - 21 / 2; 
 
 width=distanceX+diameter+cut+padding;
 depth=distanceY+diameter+cut+padding;

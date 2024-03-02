@@ -10,8 +10,9 @@ clipEdgeOver = 2;
 clipEdgeThickness = 1;
 
 clipLength = clipPadding+clipEdgeBottom+clipEdgeSlope+clipEdgeOver;
+clipTopLength = clipPadding+clipEdgeBottom+clipEdgeSlope;
 
-clipHeight = 12.2;
+clipHeight = 9.5;
 
 
 
@@ -19,8 +20,8 @@ clipHeight = 12.2;
 linear_extrude(height = clipWidth)
   polygon(points = 
     [
-      [0,0],[clipLength,0],
-      [clipLength,-clipThickness],[-clipThickness,-clipThickness],
+      [0,0],[clipTopLength,0],
+      [clipTopLength,-clipThickness],[-clipThickness,-clipThickness],
       [-clipThickness,clipThickness+clipHeight],[clipLength, clipThickness+clipHeight],
       [clipLength,clipHeight],
       // the little edge
