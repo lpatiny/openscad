@@ -1,17 +1,17 @@
 
-thickness = 4;
+thickness = 3.8;
 
 splitWidth = 3;
 splitDepth = 2;
 
-topWidth = 346;
-bottomWidth = 342;
+topWidth = 351;
+bottomWidth = topWidth - 4;
 shiftWidth = (topWidth - bottomWidth) / 2;
 boxWidth = (topWidth - thickness * (splitWidth-1)) / splitWidth;
 echo(boxWidth);
 
-topDepth = 217;
-bottomDepth = 213;
+topDepth = 222;
+bottomDepth = topDepth - 4;
 shiftDepth = (topDepth - bottomDepth) / 2;
 boxDepth = (topDepth - thickness * (splitDepth-1)) / splitDepth;
 
