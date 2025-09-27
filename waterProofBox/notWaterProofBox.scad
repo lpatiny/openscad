@@ -5,9 +5,9 @@ include <../utils/seal.scad>;
 
 internalLength = 50;
 internalWidth = 30;
-internalHeight = 10;
+internalHeight = 20;
 paddingHorizontal = 10;
-paddingVertical = 4;
+paddingVertical = 2;
 
 length = internalLength + paddingHorizontal*2;
 width = internalWidth + paddingHorizontal*2;
@@ -15,16 +15,15 @@ height = internalHeight + paddingVertical;
 
 screwDiameter = 3.5;
 headDiameter = 6.5;
-insertDiameter = 5.5;
+insertDiameter = 4.5;
 headThickness = 2.2;
 
 sealShift = 2.5;
 sealDiameter = 2.5;
 
-cableThickness = 7.3;
-cableEnlargment = cableThickness+3;
-antenaHole = 4;
+cableThickness = 8;
 
+verticalHoleDistance = internalHeight-paddingVertical-cableThickness/2;
 
 holes = [
   [paddingHorizontal/2, paddingHorizontal/2],
@@ -58,13 +57,11 @@ difference() {
       translate([hole[0], hole[1], -0.01]) cylinder(d=insertDiameter, h=10, $fn=6);
   }
   // big cable hole
-  translate([-0.01, width/2, paddingVertical+cableThickness/2]) rotate([0,90,0]) cylinder(d=cableThickness, h=length+0.02);
-  translate([-0.01, width/2, paddingVertical+cableThickness/2]) rotate([0,90,0]) cylinder(d=cableEnlargment, h=6+0.02);
-  translate([length-6, width/2, paddingVertical+cableThickness/2]) rotate([0,90,0]) cylinder(d=cableEnlargment, h=6+0.02);
-  translate([length/4*3, -0.01, paddingVertical+internalHeight/2]) rotate([-90,0,0]) cylinder(d=antenaHole, h=paddingHorizontal+0.02);
+  translate([-0.01, width/2, verticalHoleDistance+cableThickness/2]) rotate([0,90,0]) cylinder(d=cableThickness, h=length+0.02);
+  translate([-0.01, width/2-cableThickness/2, verticalHoleDistance+cableThickness*1.5]) rotate([0,90,0]) cube([cableThickness,cableThickness,length+0.02]);
 }
 
-translate([0,0,50]) difference() {
+translate([width+25,0,0]) difference() {
   roundedParallelepiped4(
     internalLength+paddingHorizontal*2,
     internalWidth+paddingHorizontal*2,

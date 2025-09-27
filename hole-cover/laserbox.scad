@@ -3,10 +3,10 @@ $fn=120;
 thickness=2; // thickness of the wall and top
 padding=5;
 height=19; // thickness of the hole
-topDiameter=38.5;
-bottomDiameter=36.5;
+topDiameter=34.0;
+bottomDiameter=topDiameter - 2;
 
-holes=[3.5,4,7.5]; // specify the number of holes and their diameters
+holes=[4.5]; // specify the number of holes and their diameters
 
 nbHoles = len(holes);
 
