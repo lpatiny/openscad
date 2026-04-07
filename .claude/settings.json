@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD:*)"
+    ]
+  }
+}
