@@ -1,16 +1,18 @@
 // ============================================================
-// 92mm Fan Holder
-// Fan is VERTICAL (XZ-plane), slides DOWN from the top.
-// Two U-brackets (left/right) capture the fan edges.
-// Y-direction (fan faces) are fully open — no wall blocks airflow.
+// 92mm Fan Holder — tilted version
+// Fan is vertical but tilted tilt_deg degrees toward the front (−Y).
+// U-bracket arms are parallelogram prisms that follow the tilt.
+// All faces at Z=0 are flat → printable without supports.
+// Fan slides in along the tilt axis from the top.
 // ============================================================
 
 /* [Fan] */
 fan_size    = 92;   // Fan outer side length (mm) — square
 fan_thick   = 25;   // Fan body depth in Y (mm)
-fan_clear_x = 0.4;  // Gap between outer wall and fan face (mm)
-fan_clear_y = 0.5;  // Gap between arm and fan face in Y (mm)
-fan_behind  = 10;   // Gap from pin-area rear edge to bracket front arm (mm)
+fan_clear_x = 0.4;  // Gap between outer wall and fan face in X (mm)
+fan_clear_y = 0.5;  // Gap between arm and fan in Y (mm)
+fan_behind  = 10;   // Gap from pin-area rear edge to front arm at Z=0 (mm)
+tilt_deg    = 10;   // Tilt angle toward front — degrees from vertical
 
 /* [Pin Mounting] */
 pin_hole_r  = 2.2;  // Pin radius (mm)
@@ -24,11 +26,12 @@ pin_dy      = 21.5; // Y distance between rows (mm)
 pin_shift_x = 5.0;  // X offset of back row vs front row (mm)
 
 /* [U-Brackets] */
-arm_t       = 3;    // Arm and outer wall thickness (mm)
+arm_t       = 3;    // Arm and outer-wall thickness (mm)
 arm_d       = 6;    // Arm depth extending inward over fan edge (mm)
-bracket_h   = 102;  // Total bracket height (fan_size + entry margin) (mm)
+entry_extra = 10;   // Extra slide length above fan for entry guide (mm)
 
 $fn = 36;
+eps = 0.01;  // thin face for hull slabs
 
 // ============================================================
 // Derived — do not edit
@@ -44,44 +47,65 @@ pin_pos = [
 cx   = (pin_pos[0][0] + pin_pos[1][0] + pin_pos[2][0] + pin_pos[3][0]) / 4;
 y_hi = pin_pos[2][1] + pin_hole_r + pin_wall;
 
-fan_x0 = cx - fan_size / 2;    // left outer face of fan
-fan_y0 = y_hi + fan_behind;    // near (front) face of fan
+fan_x0 = cx - fan_size / 2;
+fan_y0 = y_hi + fan_behind;     // front face of fan at Z=0
 
-// Y bounds of the bracket arms (outside the fan + clearance)
-arm_y_front = fan_y0 - arm_t - fan_clear_y;
-arm_y_back  = fan_y0 + fan_thick + fan_clear_y;
+// Slide-path geometry
+H    = fan_size + entry_extra;   // total slide length along fan axis
+H_dz = H * cos(tilt_deg);       // Z height of bracket
+H_dy = H * sin(tilt_deg);       // Y shift from Z=0 to Z=H_dz (toward front)
+
+// Arm Y positions at Z=0
+arm_yf0 = fan_y0 - fan_clear_y - arm_t;      // front arm base face
+arm_yb0 = fan_y0 + fan_thick + fan_clear_y;   // back arm base face
+arm_span = arm_yb0 - arm_yf0 + arm_t;         // outer-wall Y span
 
 // ============================================================
-// U-bracket modules: outer wall + front arm + back arm
+// U-bracket modules
+// Each bracket: outer-wall + front arm + back arm.
+// All three pieces are parallelogram prisms (hull of two flat slabs),
+// so the bottom face is always flat at Z=0.
 // ============================================================
 
 module left_bracket() {
-    wall_x = fan_x0 - fan_clear_x - arm_t;  // outer wall left face
+    lx = fan_x0 - fan_clear_x;   // slot inner face X (= outer-wall inner face)
     union() {
-        // Outer wall (YZ slab)
-        translate([wall_x, arm_y_front, 0])
-            cube([arm_t, fan_thick + 2*(arm_t + fan_clear_y), bracket_h]);
-        // Front arm (XZ slab extending inward)
-        translate([wall_x + arm_t, arm_y_front, 0])
-            cube([arm_d, arm_t, bracket_h]);
-        // Back arm
-        translate([wall_x + arm_t, arm_y_back, 0])
-            cube([arm_d, arm_t, bracket_h]);
+        // Outer wall — parallelogram prism leaning with the fan tilt
+        hull() {
+            translate([lx - arm_t, arm_yf0,        0   ]) cube([arm_t, arm_span, eps]);
+            translate([lx - arm_t, arm_yf0 - H_dy, H_dz]) cube([arm_t, arm_span, eps]);
+        }
+        // Front arm — captures the front face of the fan
+        hull() {
+            translate([lx, arm_yf0,        0   ]) cube([arm_d, arm_t, eps]);
+            translate([lx, arm_yf0 - H_dy, H_dz]) cube([arm_d, arm_t, eps]);
+        }
+        // Back arm — captures the back face of the fan
+        hull() {
+            translate([lx, arm_yb0,        0   ]) cube([arm_d, arm_t, eps]);
+            translate([lx, arm_yb0 - H_dy, H_dz]) cube([arm_d, arm_t, eps]);
+        }
     }
 }
 
 module right_bracket() {
-    wall_x = fan_x0 + fan_size + fan_clear_x;  // outer wall left face
+    rx = fan_x0 + fan_size + fan_clear_x;  // slot inner face X (right side)
     union() {
-        // Outer wall (YZ slab)
-        translate([wall_x, arm_y_front, 0])
-            cube([arm_t, fan_thick + 2*(arm_t + fan_clear_y), bracket_h]);
-        // Front arm (extending inward, i.e. in -X)
-        translate([wall_x - arm_d, arm_y_front, 0])
-            cube([arm_d, arm_t, bracket_h]);
+        // Outer wall
+        hull() {
+            translate([rx, arm_yf0,        0   ]) cube([arm_t, arm_span, eps]);
+            translate([rx, arm_yf0 - H_dy, H_dz]) cube([arm_t, arm_span, eps]);
+        }
+        // Front arm
+        hull() {
+            translate([rx - arm_d, arm_yf0,        0   ]) cube([arm_d, arm_t, eps]);
+            translate([rx - arm_d, arm_yf0 - H_dy, H_dz]) cube([arm_d, arm_t, eps]);
+        }
         // Back arm
-        translate([wall_x - arm_d, arm_y_back, 0])
-            cube([arm_d, arm_t, bracket_h]);
+        hull() {
+            translate([rx - arm_d, arm_yb0,        0   ]) cube([arm_d, arm_t, eps]);
+            translate([rx - arm_d, arm_yb0 - H_dy, H_dz]) cube([arm_d, arm_t, eps]);
+        }
     }
 }
 
@@ -92,29 +116,29 @@ module right_bracket() {
 difference() {
     union() {
 
-        // Pin-area base plate
+        // Base plate spanning all 4 pin sockets
         hull()
             for (p = pin_pos)
                 translate([p[0], p[1], 0])
                     cylinder(r = pin_hole_r + pin_wall, h = base_t);
 
-        // Left arm: left pin pair → left bracket outer wall
+        // Left connecting arm: left pin pair → left bracket base
         hull() {
             translate([pin_pos[0][0], pin_pos[0][1], 0])
                 cylinder(r = pin_hole_r + pin_wall, h = base_t);
             translate([pin_pos[2][0], pin_pos[2][1], 0])
                 cylinder(r = pin_hole_r + pin_wall, h = base_t);
-            translate([fan_x0 - fan_clear_x - arm_t, arm_y_front, 0])
+            translate([fan_x0 - fan_clear_x - arm_t, arm_yf0, 0])
                 cube([arm_t, arm_t, base_t]);
         }
 
-        // Right arm: right pin pair → right bracket outer wall
+        // Right connecting arm: right pin pair → right bracket base
         hull() {
             translate([pin_pos[1][0], pin_pos[1][1], 0])
                 cylinder(r = pin_hole_r + pin_wall, h = base_t);
             translate([pin_pos[3][0], pin_pos[3][1], 0])
                 cylinder(r = pin_hole_r + pin_wall, h = base_t);
-            translate([fan_x0 + fan_size + fan_clear_x, arm_y_front, 0])
+            translate([fan_x0 + fan_size + fan_clear_x, arm_yf0, 0])
                 cube([arm_t, arm_t, base_t]);
         }
 
