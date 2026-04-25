@@ -22,8 +22,8 @@ pin_wall    = 2.5;  // Socket wall thickness (mm)
 pin_sock_h  = 6;    // Socket height above base plate (mm)
 base_t      = 3;    // Base bridge plate thickness (mm)
 
-pin_dx      = 53.8; // X distance between pins in same row (mm)
-pin_dy      = 19.7; // Y distance between rows (mm)
+pin_dx      = 54.8; // X distance between pins in same row (mm)
+pin_dy      = 21.2; // Y distance between rows (mm)
 pin_shift_x = -5.0;  // X offset of back row vs front row (mm)
 
 /* [U-Brackets] */
@@ -122,30 +122,13 @@ module right_bracket() {
 difference() {
     union() {
 
-        // Base plate spanning all 4 pin sockets
-        hull()
+        // Single solid base — hull of all 4 pin cylinders + full-width front bar
+        hull() {
             for (p = pin_pos)
                 translate([p[0], p[1], 0])
                     cylinder(r = pin_hole_r + pin_wall, h = base_t);
-
-        // Left connecting arm: left pin pair → left bracket base
-        hull() {
-            translate([pin_pos[0][0], pin_pos[0][1], 0])
-                cylinder(r = pin_hole_r + pin_wall, h = base_t);
-            translate([pin_pos[2][0], pin_pos[2][1], 0])
-                cylinder(r = pin_hole_r + pin_wall, h = base_t);
             translate([fan_x0 - fan_clear_x - arm_t, arm_yf0, 0])
-                cube([arm_t, arm_t, base_t]);
-        }
-
-        // Right connecting arm: right pin pair → right bracket base
-        hull() {
-            translate([pin_pos[1][0], pin_pos[1][1], 0])
-                cylinder(r = pin_hole_r + pin_wall, h = base_t);
-            translate([pin_pos[3][0], pin_pos[3][1], 0])
-                cylinder(r = pin_hole_r + pin_wall, h = base_t);
-            translate([fan_x0 + fan_size + fan_clear_x, arm_yf0, 0])
-                cube([arm_t, arm_t, base_t]);
+                cube([fan_size + 2*(fan_clear_x + arm_t), arm_t, base_t]);
         }
 
         // Pin sockets
