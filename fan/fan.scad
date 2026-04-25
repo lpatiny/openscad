@@ -11,20 +11,20 @@ fan_size    = 92;     // Fan outer side length (mm) — square
 fan_thick   = 25;     // Fan body depth in Y (mm)
 fan_clear_x = 0.4;   // Gap between outer wall and fan face in X (mm)
 fan_clear_y = 0.5;   // Gap between arm and fan in Y (mm)
-fan_behind  = 5;    // Gap from pin-area rear edge to front arm at Z=0 (mm)
+fan_behind  = 2;    // Gap from pin-area rear edge to front arm at Z=0 (mm)
 tilt_deg    = 10;    // Tilt angle toward front — degrees from vertical
 fan_align   = "right"; // "left" = fan centred on left pin pair, "right" = right pin pair
 
 /* [Pin Mounting] */
-pin_hole_r  = 2.2;  // Pin radius (mm)
+pin_hole_r  = 2.3;  // Pin radius (mm)
 pin_clear   = 0.4;  // Extra radius clearance for printing tolerance (mm)
 pin_wall    = 2.5;  // Socket wall thickness (mm)
 pin_sock_h  = 6;    // Socket height above base plate (mm)
 base_t      = 3;    // Base bridge plate thickness (mm)
 
-pin_dx      = 54.8; // X distance between pins in same row (mm)
-pin_dy      = 21.2; // Y distance between rows (mm)
-pin_shift_x = -5.0;  // X offset of back row vs front row (mm)
+pin_dx      = 52; // X distance between pins in same row (mm)
+pin_dy      = 21.9; // Y distance between rows (mm)
+pin_shift_x = -4.7;  // X offset of back row vs front row (mm)
 
 /* [U-Brackets] */
 arm_t       = 3;    // Arm and outer-wall thickness (mm)
