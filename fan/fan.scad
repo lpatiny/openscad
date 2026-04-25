@@ -1,5 +1,5 @@
 // ============================================================
-// 92mm Fan Holder — tilted version
+// 92mm Fan Holder — tilted, with left/right alignment choice
 // Fan is vertical but tilted tilt_deg degrees toward the front (−Y).
 // U-bracket arms are parallelogram prisms that follow the tilt.
 // All faces at Z=0 are flat → printable without supports.
@@ -7,12 +7,13 @@
 // ============================================================
 
 /* [Fan] */
-fan_size    = 92;   // Fan outer side length (mm) — square
-fan_thick   = 25;   // Fan body depth in Y (mm)
-fan_clear_x = 0.4;  // Gap between outer wall and fan face in X (mm)
-fan_clear_y = 0.5;  // Gap between arm and fan in Y (mm)
-fan_behind  = 10;   // Gap from pin-area rear edge to front arm at Z=0 (mm)
-tilt_deg    = 10;   // Tilt angle toward front — degrees from vertical
+fan_size    = 92;     // Fan outer side length (mm) — square
+fan_thick   = 25;     // Fan body depth in Y (mm)
+fan_clear_x = 0.4;   // Gap between outer wall and fan face in X (mm)
+fan_clear_y = 0.5;   // Gap between arm and fan in Y (mm)
+fan_behind  = 5;    // Gap from pin-area rear edge to front arm at Z=0 (mm)
+tilt_deg    = 10;    // Tilt angle toward front — degrees from vertical
+fan_align   = "right"; // "left" = fan centred on left pin pair, "right" = right pin pair
 
 /* [Pin Mounting] */
 pin_hole_r  = 2.2;  // Pin radius (mm)
@@ -21,14 +22,14 @@ pin_wall    = 2.5;  // Socket wall thickness (mm)
 pin_sock_h  = 6;    // Socket height above base plate (mm)
 base_t      = 3;    // Base bridge plate thickness (mm)
 
-pin_dx      = 56.6; // X distance between pins in same row (mm)
-pin_dy      = 21.5; // Y distance between rows (mm)
-pin_shift_x = 5.0;  // X offset of back row vs front row (mm)
+pin_dx      = 53.8; // X distance between pins in same row (mm)
+pin_dy      = 19.7; // Y distance between rows (mm)
+pin_shift_x = -5.0;  // X offset of back row vs front row (mm)
 
 /* [U-Brackets] */
 arm_t       = 3;    // Arm and outer-wall thickness (mm)
 arm_d       = 6;    // Arm depth extending inward over fan edge (mm)
-entry_extra = 10;   // Extra slide length above fan for entry guide (mm)
+bracket_h   = 60;   // Total Z height of U-brackets (mm)
 
 $fn = 36;
 eps = 0.01;  // thin face for hull slabs
@@ -44,16 +45,21 @@ pin_pos = [
     [pin_shift_x + pin_dx, pin_dy]
 ];
 
-cx   = (pin_pos[0][0] + pin_pos[1][0] + pin_pos[2][0] + pin_pos[3][0]) / 4;
-y_hi = pin_pos[2][1] + pin_hole_r + pin_wall;
+// Outermost pin X — leftmost is front-left (x=0), rightmost is back-right (shifted)
+left_most_x  = min(pin_pos[0][0], pin_pos[2][0]);   // = 0
+right_most_x = max(pin_pos[1][0], pin_pos[3][0]);   // = pin_shift_x + pin_dx
+y_hi         = pin_pos[2][1] + pin_hole_r + pin_wall;
 
-fan_x0 = cx - fan_size / 2;
+// Fan outer edge flush with outer socket wall
+fan_x0 = (fan_align == "left")
+         ? left_most_x  - (pin_hole_r + pin_wall)
+         : right_most_x + (pin_hole_r + pin_wall) - fan_size;
 fan_y0 = y_hi + fan_behind;     // front face of fan at Z=0
 
-// Slide-path geometry
-H    = fan_size + entry_extra;   // total slide length along fan axis
-H_dz = H * cos(tilt_deg);       // Z height of bracket
-H_dy = H * sin(tilt_deg);       // Y shift from Z=0 to Z=H_dz (toward front)
+// Slide-path geometry — driven by bracket_h directly
+H_dz = bracket_h;               // Z height of bracket
+H    = bracket_h / cos(tilt_deg); // total slide length along fan axis
+H_dy = bracket_h * tan(tilt_deg); // Y shift from Z=0 to Z=H_dz (toward front)
 
 // Arm Y positions at Z=0
 arm_yf0 = fan_y0 - fan_clear_y - arm_t;      // front arm base face
